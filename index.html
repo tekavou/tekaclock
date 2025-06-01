@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>TekaClock</title>
+  <meta name="viewport" content="width=768, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden; /* 🚫 Disable scroll */
+      -webkit-overflow-scrolling: auto; /* prevent rubber banding on iOS */
+      position: fixed; /* extra iOS trick */
+    }  
+    #faceFrame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      overflow: hidden;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+    #poll-indicator {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      width: 16px;
+      height: 16px;
+      background: #0f0;
+      border-radius: 50%;
+      z-index: 1000;
+      display: none;
+    }    
+    #tapOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 9999;
+      background: black;
+      opacity: 0.01;
+      pointer-events: auto; /* ✅ must be ON */
+      transform-origin: top;
+      -webkit-transform-origin: top;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    if (!location.href.includes("t=")) {
+      location.href = location.pathname + "?t=" + Date.now();
+    }
+  </script>
+  <div id="tapOverlay"></div>
+  <iframe id="faceFrame" scrolling="no"></iframe>
+  <div id="poll-indicator"></div>
+  <script src="faces.js?t=7" defer></script>
+</body>
+</html>

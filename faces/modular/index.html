@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>TekaClock – Apple-style Icons</title>
+  <meta name="viewport" content="width=768, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="Cache-Control" content="no-store" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <style>
+    html {
+      background: #000;
+      height: 100%;
+    }
+
+    html,
+    body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      font-family: "Helvetica Neue", Helvetica, sans-serif;
+      overflow: hidden;
+      touch-action: none;      
+    }
+
+    #stage {
+      position: relative;
+      width: 768px;
+      height: 1024px;
+      margin: 0 auto;
+    }
+
+    #dateCircle {
+      position: absolute;
+      left: 28px;
+      top: 60px;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: #1b1b1d;
+      text-align: center;
+    }
+
+    #dateCircle .day {
+      font-size: 26px;
+      font-weight: 600;
+      margin-top: 34px;
+      color: #ff3b58;
+    }
+
+    #dateCircle .date {
+      font-size: 96px;
+      font-weight: 700;
+      margin-top: -10px;
+    }
+
+    #activity {
+      position: absolute;
+      left: 28px;
+      top: 360px;
+    }
+
+    #clock {
+      position: absolute;
+      right: 28px;
+      top: 40px;
+    }
+
+    #weatherBlock {
+      position: absolute;
+      left: 16px;
+      bottom: 80px;
+      width: 712px;
+      text-align: left;
+    }
+
+    #weatherNow {
+      margin-left: 30px;
+      font-size: 60px;
+      font-weight: 500;
+    }
+
+    .forecastRow {
+      margin-top: 28px;
+      white-space: nowrap;
+      text-align: center;
+    }
+
+    .forecast {
+      display: inline-block;
+      width: 104px;
+      text-align: center;
+      vertical-align: top;
+    }
+
+    .divider {
+      display: inline-block;
+      width: 1px;
+      height: 110px;
+      background: #444;
+      vertical-align: top;
+    }
+
+    .forecast .temp {
+      font-size: 32px;
+      margin-bottom: 15px;
+    }
+
+    .forecast .icon svg {
+      width: 32px;
+      height: 32px;
+    }
+
+    .forecast .hour {
+      font-size: 32px;
+      color: #aaa;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="stage">
+    <div id="dateCircle">
+      <div class="day" id="day"></div>
+      <div class="date" id="date"></div>
+    </div>
+
+    <canvas id="activity" width="200" height="200"></canvas>
+    <canvas id="clock" width="500" height="500"></canvas>
+
+    <div id="weatherBlock">
+      <span id="weatherNow">—</span>
+      <div class="forecastRow" id="forecastRow"></div>
+    </div>
+  </div>
+
+  <script>
+    
+    window.onerror = function (message, source, lineno, colno, error) {
+      alert("JS error: " + message + "\n" + source + ":" + lineno);
+      return true;
+    };
+
+    // grab key DOM elements
+    var day = document.getElementById('day');
+    var date = document.getElementById('date');
+    var weatherNow = document.getElementById('weatherNow');
+    var forecastRow = document.getElementById('forecastRow');
+
+    function updDate() {
+      var d = new Date(), w = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+      day.textContent = w[d.getDay()];
+      date.textContent = d.getDate();
+    }
+
+    var move = 0.45, ex = 0.6, stand = 0.8, a = activity.getContext('2d'), cA = 100;
+    function r(r, w, col, p) {
+      a.beginPath(); a.arc(cA, cA, r, -Math.PI / 2, 1.5 * Math.PI);
+      a.strokeStyle = '#2d2d2d'; a.lineWidth = w; a.stroke();
+      a.beginPath(); a.arc(cA, cA, r, -Math.PI / 2, (-Math.PI / 2) + p * 2 * Math.PI);
+      a.strokeStyle = col; a.lineWidth = w; a.lineCap = 'round'; a.stroke();
+    }
+    function drawAct() {a.clearRect(0, 0, 200, 200); r(88, 18, '#ff3b30', move); r(60, 18, '#34c759', ex); r(32, 18, '#007aff', stand);}
+
+    var cc = clock.getContext('2d'), cC = 250;
+    function drawClock() {
+      cc.clearRect(0, 0, 500, 500);
+      var n = new Date(), s = n.getSeconds();
+      for (var i = 0; i < 60; i++) {
+        var ang = -Math.PI / 2 + i * 2 * Math.PI / 60;
+        var x1 = cC + Math.cos(ang) * 225, y1 = cC + Math.sin(ang) * 225;
+        var x2 = cC + Math.cos(ang) * 200, y2 = cC + Math.sin(ang) * 200;
+        cc.beginPath(); cc.moveTo(x1, y1); cc.lineTo(x2, y2);
+        cc.strokeStyle = i <= s ? '#fff' : '#2e2e2e';
+        cc.lineWidth = 8; cc.lineCap = 'butt'; cc.stroke();
+      }
+      var h = n.getHours(), m = n.getMinutes(), txt = ((h + 11) % 12 + 1) + ':' + ('0' + m).slice(-2);
+      cc.fillStyle = '#fff'; cc.font = '124px Helvetica'; cc.textAlign = 'center'; cc.textBaseline = 'middle'; cc.fillText(txt, cC, cC);
+    }
+
+    function getIconCode(code) {
+      switch (code) {
+        case 0: return "0";
+        case 1: case 2: return "1";
+        case 3: return "3";
+        case 45: case 48: return "45";
+        case 51: case 53: case 55: case 56: case 57: return "51";
+        case 61: case 63: case 65: return "61";
+        case 66: case 67: return "66";
+        case 71: case 73: case 75: return "71";
+        case 77: return "77";
+        case 80: case 81: case 82: return "80";
+        case 85: case 86: return "85";
+        case 95: case 96: case 99: return "95";
+        default: return "0";
+      }
+    }
+    function buildIcon(code) {
+      var iconCode = getIconCode(code);
+      return '<img src="/global/images/weather/' + iconCode + '.png" width="40" alt="">';
+    }
+
+    function fetchWeather() {
+      var x = new XMLHttpRequest();
+      x.open('GET', '/weather', true);
+      x.onreadystatechange = function () {
+        if (x.readyState === 4 && x.status === 200) {
+          try {
+            var d = JSON.parse(x.responseText);
+            var cur = Math.round(d.current_weather.temperature);
+            var tmp = d.hourly.temperature_2m;
+            var code = d.hourly.weathercode;
+            console.log(code);
+            var tim = d.hourly.time;
+            var hi = Math.max.apply(null, tmp.slice(0, 24));
+            var lo = Math.min.apply(null, tmp.slice(0, 24));
+            weatherNow.innerHTML = '<span style="color:#0a84ff">' + cur + '°</span> H:' + Math.round(hi) + '° L:' + Math.round(lo) + '°';
+
+            var now = new Date();
+            // build local "YYYY-MM-DDTHH" string to match hourly.time entries
+            function pad(n) {return ('0' + n).slice(-2);}
+            var iso = now.getFullYear() + '-' +
+              pad(now.getMonth() + 1) + '-' +
+              pad(now.getDate()) + 'T' +
+              pad(now.getHours());
+            var idx = 0;
+            while (idx < tim.length && tim[idx].slice(0, 13) !== iso) idx++;
+
+            var row = forecastRow;
+            row.innerHTML = '<div class="divider"></div>';
+            for (var k = 0; k < 6; k++) {
+              var i = (idx + k) % tim.length;
+              var hr = parseInt(tim[i].substr(11, 2), 10);
+              var lbl = k ? ((hr + 11) % 12 + 1) + (hr < 12 ? 'AM' : 'PM') : 'NOW';
+              row.innerHTML += '<div class="forecast">' +
+                '<div class="temp">' + Math.round(tmp[i]) + '°</div>' +
+                '<div class="icon">' + buildIcon(code[i]) + '</div>' +
+                '<div class="hour">' + lbl + '</div>' +
+                '</div>';
+              if (k < 6) row.innerHTML += '<div class="divider"></div>';
+            }
+          } catch (e) { }
+        }
+      };
+      x.send();
+    }
+    function initFace() {
+      updDate();
+      drawAct();
+      drawClock();
+      fetchWeather();
+    }
+    window.initFace = initFace;
+    initFace();
+    var clockTimer = setInterval(drawClock, 1000);
+    var weatherTimer = setInterval(fetchWeather, 600000);
+    window.onunload = function () {
+      clearInterval(clockTimer);
+      clearInterval(weatherTimer);
+    };
+  </script>
+</body>
+
+</html>

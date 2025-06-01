@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Mickey Watch Test</title>
+  <meta name="viewport" content="width=768, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="Cache-Control" content="no-store" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 768px;
+      height: 1024px;
+      overflow: hidden;
+      background-color: #e53935;
+      /* Mickey’s red shorts */
+    }
+
+    #body {
+      position: absolute;
+      width: 374px;
+      /* scaled from 1403 */
+      height: 576px;
+      /* scaled from 2160 */
+      left: 197px;
+      top: 212px;
+      z-index: 2;
+      background: url('images/body.png') no-repeat center center;
+      background-size: contain;
+      -webkit-animation: body-rotate 2s steps(1, end) infinite;
+    }
+
+    #foot {
+      position: absolute;
+      width: 131px;
+      height: 66px;
+      left: 199px;
+      top: 677px;
+      background: url('images/foot.png') no-repeat;
+      background-size: contain;
+      z-index: 1;
+      -webkit-transform-origin: 90px 10px;
+      transform-origin: 90px 10px;
+      -webkit-animation: foot-tap 1s steps(1, end) infinite;
+    }
+
+    #hat {
+      position: absolute;
+      width: 224px;
+      height: 150px;
+      left: 304px;      
+      top: 211px; 
+      background: url('images/hat.png') no-repeat;
+      background-size: contain;
+      z-index: 5;
+      -webkit-transform-origin: 50% 100%;
+      transform-origin: 50% 100%;
+      -webkit-animation: hat-bounce 1s steps(1, end) infinite;
+    }
+    @-webkit-keyframes hat-bounce {
+      0%, 100% { -webkit-transform: translate(0px, 0px) rotate(0deg); }
+      50%      { -webkit-transform: translate(2px, 5px) rotate(5deg); }
+    }
+
+    @-webkit-keyframes foot-tap {
+      0%, 100% { -webkit-transform: rotate(0deg); }
+      50%      { -webkit-transform: rotate(15deg); }
+    }
+
+    .hand {
+      position: absolute;
+      background-repeat: no-repeat;
+      background-size: contain;
+      transform-origin: 50% 100%;
+      -webkit-transform-origin: 50% 100%;
+      z-index: 3;    
+    }
+
+    @-webkit-keyframes body-rotate {
+      0%   { -webkit-transform: rotate(0deg); }
+      25%  { -webkit-transform: rotate(-2deg); }
+      50%  { -webkit-transform: rotate(2deg); }
+      75%  { -webkit-transform: rotate(-2deg); }
+      100% { -webkit-transform: rotate(0deg); }
+    }
+
+    #pants {
+      position: absolute;
+      width: 519px;
+      height: 159px;
+      left: 312px;
+      top: 502px;
+      background: url('images/pants.png') no-repeat;
+      background-size: contain;
+      z-index: 2;
+      -webkit-animation: pants-shift 2s steps(1, end) infinite;
+}
+
+      @-webkit-keyframes pants-shift {
+        0%   { -webkit-transform: translateX(0px); }
+        25%  { -webkit-transform: translateX(-3px); }
+        50%  { -webkit-transform: translateX(3px); }
+        75%  { -webkit-transform: translateX(-3px); }
+        100% { -webkit-transform: translateX(0px); }
+      }
+
+    #minuteHand {
+      width: 56px;
+      height: 350px;
+      left: 356px;      
+      top: 140px;      
+      background-image: url('images/minute.png');
+      z-index: 3;
+      -webkit-animation: minute-spin 3600s linear infinite;
+    }
+
+    #hourHand {
+      width: 56px;
+      height: 245px;
+      left: 356px;
+      top: 250px;
+      z-index: 6;      
+      background-image: url('images/hour.png');
+      -webkit-animation: hour-spin 43200s linear infinite;
+    }
+
+    .hour-number {
+      position: absolute;
+      font-family: 'Times New Roman', 'Arial', sans-serif;
+      font-size: 128px;      
+      font-weight: bold;
+      color: black;
+      -webkit-text-stroke: 2px white;      
+      text-shadow: 2px 2px 0 black, -1px 1px 0 black, 1px -1px 0 black, -1px -1px 0 black;      
+      z-index: 6;
+      text-align: center;
+      -webkit-transition: -webkit-transform 0.3s ease-in-out;
+      transition: transform 0.3s ease-in-out;
+    }
+    
+    .hour-number[data-hour="12"] {
+      top: 12px;
+      left: 330px;
+    }
+
+    .hour-number[data-hour="1"] {
+      top: 12px;
+      left: 568px;
+    }
+
+    .hour-number[data-hour="2"] {
+      top: 181px;
+      left: 688px;
+    }
+
+    .hour-number[data-hour="3"] {
+      top: 412px;
+      left: 688px;
+    }
+
+    .hour-number[data-hour="4"] {
+      top: 643px;
+      left: 688px;
+    }
+
+    .hour-number[data-hour="5"] {
+      top: 832px;
+      left: 568px;
+    }
+
+    .hour-number[data-hour="6"] {
+      top: 832px;
+      left: 358px;
+    }
+
+    .hour-number[data-hour="7"] {
+      top: 832px;
+      left: 148px;
+    }
+
+    .hour-number[data-hour="8"] {
+      top: 643px;
+      left: 32px;
+    }
+
+    .hour-number[data-hour="9"] {
+      top: 412px;
+      left: 32px;
+    }
+
+    .hour-number[data-hour="10"] {
+      top: 181px;
+      left: 32px;
+    }
+
+    .hour-number[data-hour="11"] {
+      top: 12px;
+      left: 116px;
+    }
+
+    @-webkit-keyframes minute-spin {
+      from {
+        -webkit-transform: rotate(0deg);
+      }
+
+      to {
+        -webkit-transform: rotate(360deg);
+      }
+    }
+
+    @-webkit-keyframes hour-spin {
+      from {
+        -webkit-transform: rotate(0deg);
+      }
+
+      to {
+        -webkit-transform: rotate(360deg);
+      }
+    }
+
+    @-webkit-keyframes wiggle {
+      0%   { -webkit-transform: rotate(0deg); }
+      25%  { -webkit-transform: rotate(-5deg); }
+      50%  { -webkit-transform: rotate(5deg); }
+      75%  { -webkit-transform: rotate(-5deg); }
+      100% { -webkit-transform: rotate(0deg); }
+    }
+
+    .wiggle-digit {
+      -webkit-animation: wiggle 0.6s ease-in-out;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <canvas id="bgCanvas" width="40" height="40" style="display:none"></canvas>
+
+  <!-- Mouse body -->
+  <div id="body"></div>
+  <div id="pants"></div>
+  <div id="foot"></div>
+  <div id="hat"></div>
+
+  <div id="minuteHand" class="hand"></div>
+  <div id="hourHand" class="hand"></div>
+
+  <div class="hour-number" data-hour="1">1</div>
+  <div class="hour-number" data-hour="2">2</div>
+  <div class="hour-number" data-hour="3">3</div>
+  <div class="hour-number" data-hour="4">4</div>
+  <div class="hour-number" data-hour="5">5</div>
+  <div class="hour-number" data-hour="6">6</div>
+  <div class="hour-number" data-hour="7">7</div>
+  <div class="hour-number" data-hour="8">8</div>
+  <div class="hour-number" data-hour="9">9</div>
+  <div class="hour-number" data-hour="10">10</div>
+  <div class="hour-number" data-hour="11">11</div>
+  <div class="hour-number" data-hour="12">12</div>
+
+  <script>
+
+    (function () {
+      
+      function syncHands() {
+        var now = new Date();
+        var minuteEl = document.getElementById('minuteHand');
+        var hourEl = document.getElementById('hourHand');
+      
+        var minuteOffset = now.getMinutes() * 60 + now.getSeconds() + now.getMilliseconds() / 1000;
+        minuteEl.style.webkitAnimationDelay = (-minuteOffset) + 's';
+      
+        var hourLocal = now.getHours();
+        var hourMod12 = hourLocal % 12;
+        var hourOffset = hourMod12 * 3600 + now.getMinutes() * 60 + now.getSeconds() + now.getMilliseconds() / 1000;
+        hourEl.style.webkitAnimationDelay = (-hourOffset) + 's';
+      
+        var minuteLocal = now.getMinutes();
+        
+        if (minuteLocal >= 45 || minuteLocal <= 15) {
+          minuteEl.style.zIndex = '1';
+        } else {
+          minuteEl.style.zIndex = '3';
+        }
+      }
+
+      function applyPattern() {
+        var c = document.getElementById('bgCanvas'),
+          ctx = c.getContext && c.getContext('2d');
+        if (!ctx) return;
+        var patterns = [
+          // Mustard yellow w/ brown grid
+          {
+            color: '#FFB300',
+            draw: function () {
+              ctx.fillStyle = this.color;
+              ctx.fillRect(0, 0, c.width, c.height);
+              ctx.fillStyle = '#6D4C41';
+              for (var y = 0; y < c.height; y += 16) {
+                for (var x = 15; x < c.width; x += 64) {
+                  ctx.fillRect(x + 4, y + 4, 8, 8);
+                }
+              }
+            }
+          },
+          //Burnt orange grid (more intense lines)
+          {
+            color: '#F57C00',
+            draw: function () {
+              ctx.fillStyle = this.color;
+              ctx.fillRect(0, 0, c.width, c.height);
+              ctx.strokeStyle = '#FFF3E0';
+              ctx.lineWidth = 5;
+              for (var x = 4; x < c.width; x += 68) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, c.height);
+                ctx.stroke();
+              }
+              for (var y = 9; y < c.height; y += 68) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(c.width, y);
+                ctx.stroke();
+              }
+            }
+          },
+          // Deep red polka dots
+          {
+            color: '#D32F2F',
+            draw: function () {
+              ctx.fillStyle = this.color;
+              ctx.fillRect(0, 0, c.width, c.height);
+              ctx.fillStyle = '#FFCDD2';
+              for (var y = 24; y < c.height; y += 64) {
+                for (var x = 24; x < c.width; x += 60) {
+                  ctx.beginPath();
+                  ctx.arc(x, y, 10, 0, 2 * Math.PI);
+                  ctx.fill();
+                }
+              }
+            }
+          },
+          // Plum boomerangs
+          {
+            color: 'yellow',
+            draw: function () {
+              ctx.fillStyle = this.color;
+              ctx.fillRect(0, 0, c.width, c.height);
+              ctx.fillStyle = '#E1BEE7';
+              var step = 20;
+              for (var y = 0; y < c.height; y += step) {
+                for (var x = 0; x < c.width; x += step) {
+                  ctx.save();
+                  ctx.translate(x + step / 2, y + step / 2);
+                  ctx.rotate(Math.PI / 4);
+                  ctx.fillRect(-3, -10, 6, 20);
+                  ctx.restore();
+                }
+              }
+            }
+          },
+          // Diamond tiles
+          {
+            color: '#303F9F',
+            draw: function () {
+              ctx.fillStyle = this.color;
+              ctx.fillRect(0, 0, c.width, c.height);
+              ctx.fillStyle = '#C5CAE9';
+              var s = 10;
+              for (var y = 0; y < c.height; y += s) {
+                for (var x = 0; x < c.width; x += s) {
+                  ctx.beginPath();
+                  ctx.moveTo(x + s / 2, y);
+                  ctx.lineTo(x + s, y + s / 2);
+                  ctx.lineTo(x + s / 2, y + s);
+                  ctx.lineTo(x, y + s / 2);
+                  ctx.closePath();
+                  ctx.fill();
+                }
+              }
+            }
+          },
+          // Crosshatch (diagonal criss-cross lines)
+          {
+            color: '#6D4C41',
+            draw: function () {
+              ctx.fillStyle = this.color;
+              ctx.fillRect(0, 0, c.width, c.height);
+              ctx.strokeStyle = '#A1887F';
+              ctx.lineWidth = 2;
+              for (var y = -c.height; y < c.height * 2; y += 40) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(c.width, y + c.width);
+                ctx.stroke();
+              }
+              for (var y = 0; y < c.height * 2; y += 40) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(c.width, y - c.width);
+                ctx.stroke();
+              }
+            }
+          },
+          // Pin-dot (cream background, small brown dots)
+          {
+            color: '#FFF8E1',
+            draw: function () {
+              ctx.fillStyle = this.color;
+              ctx.fillRect(0, 0, c.width, c.height);
+              ctx.fillStyle = '#5D4037';
+              for (var y = 14; y < c.height; y += 30) {
+                for (var x = 22; x < c.width; x += 30) {
+                  ctx.beginPath();
+                  ctx.arc(x, y, 5, 0, 2 * Math.PI);
+                  ctx.fill();
+                }
+              }
+            }
+          },
+          // Checkerboard (small squares)
+          {
+            color: '#FFAB91',
+            draw: function () {
+              ctx.fillStyle = this.color;
+              ctx.fillRect(0, 0, c.width, c.height);
+              ctx.fillStyle = '#3E2723';
+              for (var y = 5; y < c.height; y += 20) {
+                for (var x = (y / 20 % 2 ? 10 : 0); x < c.width; x += 20) {
+                  ctx.fillRect(x, y, 10, 10);
+                }
+              }
+            }
+          },
+          // Pinstripes (thin vertical lines)
+          {
+            color: '#283593',
+            draw: function () {
+              ctx.fillStyle = this.color;
+              ctx.fillRect(0, 0, c.width, c.height);
+              ctx.strokeStyle = '#C5CAE9';
+              ctx.lineWidth = 1;
+              for (var x = 0; x < c.width; x += 15) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, c.height);
+                ctx.stroke();
+              }
+            }
+          },
+          // Concentric circles (tonal rings)
+        {
+            color: '#827717',
+            draw: function () {
+              var cx = c.width / 2, cy = c.height / 2;
+              ctx.clearRect(0, 0, c.width, c.height);
+              ctx.fillStyle = this.color;
+              ctx.fillRect(0, 0, c.width, c.height);
+              ctx.strokeStyle = '#F9FBE7';
+              ctx.lineWidth = 4;
+              for (var r = 12; r < Math.max(c.width, c.height); r += 40) {
+                ctx.beginPath();
+                ctx.arc(cx, cy, r, 0, 2 * Math.PI);
+                ctx.stroke();
+              }
+            }
+          }
+        ];
+        var p = patterns[Math.floor(Math.random() * patterns.length)];
+        p.draw();
+        document.documentElement.style.backgroundColor = p.color;
+        document.body.style.backgroundColor = p.color;
+        var data = c.toDataURL();
+        document.body.style.backgroundImage = 'url(' + data + ')';
+        document.body.style.backgroundRepeat = 'repeat';
+      }
+      
+      window.initFace = function () {
+        syncHands();
+        applyPattern();
+      };
+
+      initFace(); 
+      setInterval(syncHands, 60000);
+      var now = new Date();
+      var msToNextHour = (60 - now.getMinutes()) * 60000 - now.getSeconds() * 1000 - now.getMilliseconds();
+      setTimeout(function () {
+        initFace();
+        setInterval(function () {
+          initFace();
+        }, 3600000);
+      }, msToNextHour);
+
+      setInterval(function () {
+        var now = new Date();
+        var sec = now.getSeconds();
+        var digits = document.querySelectorAll('.hour-number');
+        var targetHour = Math.floor(sec / 5) + 1;
+
+        for (var i = 0; i < digits.length; i++) {
+          var el = digits[i];
+          var hour = parseInt(el.getAttribute('data-hour'), 10);
+          if (hour === targetHour) {
+            el.classList.remove('wiggle-digit');
+            void el.offsetWidth;
+            el.classList.add('wiggle-digit');
+          } else {
+            el.classList.remove('wiggle-digit');
+          }
+        }
+      }, 1000);
+    })();
+  </script>
+
+</body>
+
+</html>

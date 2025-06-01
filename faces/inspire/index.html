@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>TekaClock – Inspire Face</title>
+    <meta name="viewport" content="width=768, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta http-equiv="Cache-Control" content="no-store" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            color: #fff;
+            font-family: "Helvetica Neue", Helvetica, sans-serif;
+            width: 768px;
+            height: 1024px;
+            overflow: hidden;
+        }
+
+        #stage {
+            position: relative;
+            width: 768px;
+            height: 1024px;
+        }
+
+        #time {
+            position: absolute;
+            font-size: 176px;
+            font-family: Helvetica, sans-serif;
+            top: 90px;
+            right: 35px;
+        }
+
+        #date {
+            position: absolute;
+            font-size: 36px;
+            font-family: Helvetica, sans-serif;
+            top: 70px;
+            right: 40px;
+            color: #ff3a58;
+        }
+
+        #inspireBox {
+            position: absolute;
+            left: 40px;
+            margin: 20px auto;
+            width: 690px;
+            padding: 0;
+            font-size: 28px;
+            line-height: 1.4;
+            border-radius: 16px;         
+            color: #e0e0e0;
+            background-color: #2d2d2d;
+            font-family: "Georgia", "Times New Roman", serif;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);              
+            overflow: visible;
+            top: 330px;
+        }
+
+        .quoteIcon {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 64px;
+            height: 64px;
+            z-index: 10;
+            pointer-countdowns: none;
+        }
+
+        #inspireBox span {
+            display: table-cell;
+            vertical-align: middle;
+            width: 700px;
+            height: 300px;
+            padding: 20px;            
+            border-radius: 20px;
+            color: #e0e0e0;
+            font-size: 30px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .widget {
+            position: absolute;
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            background: #2d2d2d;
+            text-align: center;
+        }
+
+        #weatherWidget {
+            left: 40px;
+            top: 60px;
+        }
+
+        #countdownRow {
+            position: absolute;
+            bottom: 40px;
+            left: 36px;
+            width: 268px;
+        }
+
+        .countdownBox {
+            width: 110px;
+            height: 110px;
+            border-radius: 12px;
+            background: #2d2d2d;
+            text-align: center;
+            float: left;
+            margin: 20px 20px 0 0;
+            border: 2px solid #ff3b58;
+        }
+
+        .countdownMain {
+            font-size: 52px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .countdownLabel {
+            font-size: 22px;
+            color: white;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        #countdownTitle {
+            position: absolute;
+            bottom: 295px;
+            left: 36px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .weatherWidget {
+            color: #fff;
+            font-size: 96px;
+            font-weight: 700;
+            line-height: 1;
+            text-align: center;
+            position: absolute;
+            width: 240px;
+            top: 50px;
+        }
+
+        .topRow {
+            color: #ff3b58;
+            font-size: 42px;
+            margin-top: 6px;
+            position: absolute;
+            text-align: center;
+            width: 240px;
+            top: 0;
+            margin-left: 10px;
+        }
+
+        .subRow {
+            color: #fff;
+            font-size: 32px;
+            font-weight: 400;
+            line-height: 1;
+            text-align: center;
+            position: absolute;
+            width: 240px;
+            bottom: 30px;
+        }
+
+        .weatherIcon {
+            width: 120px;
+            height: 120px;
+        }
+
+        #upcomingEvents {
+            position: absolute;
+            bottom: 40px;
+            left: 320px;
+            width: 370px;
+            color: #fff;
+            font-family: Helvetica, sans-serif;
+            background-color: #2d2d2d;
+            border-radius: 20px;
+            padding: 20px;
+            height: 210px;
+        }
+
+        .eventLine {
+            margin-bottom: 8px;
+            font-size: 24px;
+        }
+
+        .eventPrefix {
+            color: #fff;
+            margin-right: 6px;
+        }
+        .eventName {
+            color: #ff3a58;
+        }
+        
+    </style>
+</head>
+
+<body>
+    <div id="stage">
+        <div id="date">
+            <span id="dayLabel">--</span>
+            <span id="dayNum">--</span>
+        </div>
+        <div id="time">--:--</div>
+        <div id="inspireBox">
+            <img src="/global/images/icons/quote.png?3" class="quoteIcon" alt="inspiration icon" width="64" height="34" id="inspireIcon">
+            <span>Loading inspiration...</span>
+        </div>
+
+        <div class="widget" id="weatherWidget">
+            <div class="topRow" id="curTemp">--</div>
+            <div class="weatherWidget icon" id="weatherIcon">--</div>
+            <div class="subRow" id="hilo">H:-- L:--</div>
+        </div>
+
+        <div id="countdownTitle"><span id="countdownName">Loading...</span></div>
+
+        <div id="countdownRow">
+            <div class="countdownBox">
+                <div class="countdownMain" id="cdDays">--</div>
+                <div class="countdownLabel">DAYS</div>
+            </div>
+            <div class="countdownBox">
+                <div class="countdownMain" id="cdHours">--</div>
+                <div class="countdownLabel">HOURS</div>
+            </div>
+            <div class="countdownBox">
+                <div class="countdownMain" id="cdMinutes">--</div>
+                <div class="countdownLabel">MINS</div>
+            </div>
+            <div class="countdownBox">
+                <div class="countdownMain" id="cdSeconds">--</div>
+                <div class="countdownLabel">SECS</div>
+            </div>
+        </div>
+        <div id="upcomingEvents">
+            <div class="eventLine" id="event1">Loading...</div>
+            <div class="eventLine" id="event2"></div>
+            <div class="eventLine" id="event3"></div>
+            <div class="eventLine" id="event4"></div>
+            <div class="eventLine" id="event5"></div>
+        </div>
+    </div>
+
+    <script>
+    (function () {
+        
+        function parseISO(str) {
+            var p = str.split("-");
+            // handle possible "yyyy-mm-ddThh:mm:ss" payload
+            var dayPart = p[2].split("T")[0];
+            return new Date(
+                parseInt(p[0], 10),           // year
+                parseInt(p[1], 10) - 1,       // month 0-based
+                parseInt(dayPart, 10),        // day
+                0, 0, 0, 0                   
+            );
+        }
+        function pad(n) {return ('0' + n).slice(-2);}
+
+        
+        function calculateVariableHolidays(year) {
+            
+            function nthWeekday(n, weekday, month) {
+                // For Victoria Day: last Monday before May 25
+                if (month === 4 && n === 1 && weekday === 1) {                    
+                    var d = new Date(year, 4, 24);
+                    while (d.getDay() !== 1) d.setDate(d.getDate() - 1);
+                    return d;
+                }                
+                var date = new Date(year, month, 1);
+                var add = (7 + weekday - date.getDay()) % 7;
+                return new Date(year, month, 1 + add + 7 * (n - 1));
+            }
+            
+            function calculateEaster(y) {
+                var f = Math.floor,
+                    G = y % 19,
+                    C = f(y / 100),
+                    H = (C - f(C / 4) - f((8 * C + 13) / 25) + 19 * G + 15) % 30,
+                    I = H - f(H / 28) * (1 - f(29 / (H + 1)) * f((21 - G) / 11)),
+                    J = (y + f(y / 4) + I + 2 - C + f(C / 4)) % 7,
+                    L = I - J,
+                    month = 3 + f((L + 40) / 44),
+                    day = L + 28 - 31 * f(month / 4);
+                return new Date(y, month - 1, day);
+            }
+
+            var easter = calculateEaster(year);
+            var goodFriday = new Date(easter); goodFriday.setDate(easter.getDate() - 2);
+            var easterMonday = new Date(easter); easterMonday.setDate(easter.getDate() + 1);
+
+            return [
+                { name: "Good Friday", date: goodFriday.toISOString().slice(0, 10), recurring: true, type: "holiday" },
+                { name: "Easter Monday", date: easterMonday.toISOString().slice(0, 10), recurring: true, type: "holiday" },
+                { name: "Victoria Day", date: nthWeekday(1, 1, 4).toISOString().slice(0, 10), recurring: true, type: "holiday" }, 
+                { name: "Labour Day", date: nthWeekday(1, 1, 8).toISOString().slice(0, 10), recurring: true, type: "holiday" },
+                { name: "Thanksgiving", date: nthWeekday(2, 1, 9).toISOString().slice(0, 10), recurring: true, type: "holiday" }
+            ];
+        }
+
+        var currentYear = new Date().getFullYear();
+        var events = [                 
+            { name: "New Year's Day", date: currentYear + "-01-01", recurring: true, type: "holiday" },            
+            { name: "Saint-Jean-Baptiste", date: currentYear + "-06-24", recurring: true, type: "holiday" },
+            { name: "Canada Day", date: currentYear + "-07-01", recurring: true, type: "holiday" },
+            { name: "Remembrance Day", date: currentYear + "-11-11", recurring: true, type: "holiday" },
+            { name: "Christmas Day", date: currentYear + "-12-25", recurring: true, type: "holiday" },
+            { name: "Boxing Day", date: currentYear + "-12-26", recurring: true, type: "holiday" },
+            { name: "New Year's Eve", date: currentYear + "-12-31", recurring: true, type: "holiday" },
+            { name: "Valentine's Day", date: currentYear + "-02-14", recurring: true, type: "event" },
+            { name: "Halloween", date: currentYear + "-10-31", recurring: true, type: "event" },            
+        ].concat(calculateVariableHolidays(currentYear));
+
+    
+        function updateTime() {
+            var now = new Date();
+            var h = now.getHours();
+            if (h > 12) h -= 12; // Convert to 12-hour format
+            var m = now.getMinutes();
+            document.getElementById("time").textContent = h + ":" + pad(m);
+        }
+
+        function updateCalendar() {
+            var now = new Date();
+            var days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+            document.getElementById("dayLabel").textContent = days[now.getDay()];
+            document.getElementById("dayNum").textContent = now.getDate();
+        }
+
+        function getClosestCountdown(countdowns) {
+            var now = new Date();
+            var closest = null;
+            var minDiff = Infinity;
+            for (var i = 0; i < countdowns.length; i++) {
+                var evt = countdowns[i];
+                var date = parseISO(evt.date);
+                var diff = date - now;
+                if (diff >= 0 && diff < minDiff) {
+                    closest = {name: evt.name, diff: diff};
+                    minDiff = diff;
+                }
+            }
+            return closest;
+        }
+
+        function updateCountdown() {
+            var countdowns = [
+                { name: "Switch 2 launch", date: "2025-06-05T00:00:00" }
+            ];
+            var evt = getClosestCountdown(countdowns);
+            if (evt) {
+                var ms = evt.diff;
+                var days = Math.floor(ms / (1000 * 60 * 60 * 24));
+                var hours = Math.floor((ms / (1000 * 60 * 60)) % 24);
+                var minutes = Math.floor((ms / (1000 * 60)) % 60);
+                var seconds = Math.floor((ms / 1000) % 60);
+                document.getElementById("cdDays").textContent = String(days);
+                document.getElementById("cdHours").textContent = String(hours);
+                document.getElementById("cdMinutes").textContent = String(minutes);
+                document.getElementById("cdSeconds").textContent = String(seconds);
+                document.getElementById("countdownName").textContent = evt.name.toUpperCase();
+            }
+        }
+
+        function updateEvents() {
+            var now = new Date();
+            now.setHours(0, 0, 0, 0);
+
+            var upcoming = events.map(function(evt) {
+                var nowYear = now.getFullYear();
+                var parts = evt.date.split("-");
+                var eventDate = new Date(nowYear, parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+                
+                if (evt.recurring) {
+                    if (eventDate < now) {
+                        eventDate.setFullYear(nowYear + 1);
+                    }
+                } else {                
+                    eventDate = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+                }
+                return {
+                    name: evt.name,
+                    type: evt.type,
+                    date: eventDate,
+                    daysAway: Math.floor((eventDate - now) / (1000 * 60 * 60 * 24))
+                };
+            }).sort(function(a, b) {
+                return a.date - b.date;
+            });
+
+            for (var i = 0; i < 5; i++) {
+                var el = document.getElementById("event" + (i + 1));
+                if (upcoming[i]) {
+                    var d = upcoming[i].daysAway;
+                    var prefix;
+                    if (d === 0) {
+                        prefix = "Today";
+                    } else if (d === 1) {
+                        prefix = "Tomorrow";
+                    } else if (d > 10) {
+                        var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                                          "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                        var dateObj = upcoming[i].date;
+                        prefix = monthNames[dateObj.getMonth()] + " " + dateObj.getDate();
+                    } else {
+                        prefix = "In " + d + " days";
+                    }
+
+                    var emoji = "";
+                    if (upcoming[i].type === "birthday") {
+                        emoji = "🎂";
+                    } else if (upcoming[i].type === "event") {
+                        emoji = "📅";
+                    } else if (upcoming[i].type === "holiday") {
+                        emoji = "🎉";
+                    }
+                    
+                    var age = null;
+                    if (upcoming[i].type === "birthday") {
+                        var birthYear = null;
+                        for (var j = 0; j < events.length; j++) {
+                            if (events[j].name === upcoming[i].name) {
+                                birthYear = parseInt(events[j].date.split("-")[0], 10);
+                                break;
+                            }
+                        }
+                        if (birthYear !== null) {
+                            age = upcoming[i].date.getFullYear() - birthYear;
+                        }
+                    }
+                    var nameWithAge = upcoming[i].name + (age !== null ? " (" + age + ")" : "");
+
+                    el.innerHTML = emoji + ' <span class="eventPrefix">' + prefix + '</span><span class="eventName">' + nameWithAge + '</span>';
+                } else {
+                    el.textContent = "";
+                }
+            }
+        }
+        
+        var inspireState = { showQuote: true };
+        function fetchInspiration() {
+            var isQuote = inspireState.showQuote;
+            var url = isQuote ? '/inspiration' : '/fact';
+            var iconSrc = isQuote
+                ? '/global/images/icons/quote.png?3'
+                : '/global/images/icons/fact.png?3';
+            var iconAlt = isQuote ? 'quote icon' : 'fact icon';
+            var span = document.querySelector("#inspireBox span");
+            var icon = document.getElementById("inspireIcon");
+            icon.src = iconSrc;
+            icon.alt = iconAlt;
+            var x = new XMLHttpRequest();
+            x.open('GET', url, true);
+            x.onreadystatechange = function () {
+                if (x.readyState === 4) {
+                    if (x.status === 200) {
+                        try {
+                            var d = JSON.parse(x.responseText);
+                            if (isQuote) {
+                                span.textContent = d.quote || "No quote today.";
+                            } else {
+                                span.textContent = d.fact || "No fact today.";
+                            }
+                        } catch (e) {
+                            span.textContent = isQuote ? "Error loading quote." : "Error loading fact.";
+                        }
+                    } else {
+                        span.textContent = isQuote ? "Error loading quote." : "Error loading fact.";
+                    }
+                }
+            };
+            x.send();
+            inspireState.showQuote = !inspireState.showQuote;
+        }
+
+        function getIconCode(code) {
+            switch (code) {
+                case 0: return "0";
+                case 1:
+                case 2: return "1";
+                case 3: return "3";
+                case 45:
+                case 48: return "45";
+                case 51:
+                case 53:
+                case 55:
+                case 56:
+                case 57: return "51";
+                case 61:
+                case 63:
+                case 65: return "61";
+                case 66:
+                case 67: return "66";
+                case 71:
+                case 73:
+                case 75: return "71";
+                case 77: return "77";
+                case 80:
+                case 81:
+                case 82: return "80";
+                case 85:
+                case 86: return "85";
+                case 95:
+                case 96:
+                case 99: return "95";
+                default: return "0";
+            }
+        }
+
+        function buildIcon(code) {
+            var iconCode = getIconCode(code);
+            return '<img src="/global/images/weather/' + iconCode + '.png?1" alt="" class="weatherIcon">';
+        }
+
+        function fetchWeather() {
+            var x = new XMLHttpRequest();
+            x.open('GET', '/weather', true);
+            x.onreadystatechange = function () {
+                if (x.readyState === 4 && x.status === 200) {
+                    try {
+                        var d = JSON.parse(x.responseText);
+                        var cur = Math.round(d.current_weather.temperature);
+                        var temps = d.hourly.temperature_2m;
+                        var code = d.hourly.weathercode;
+                        var now = new Date();
+
+                        function pad(n) {return ('0' + n).slice(-2);}
+                        var iso = now.getFullYear() + '-' +
+                            pad(now.getMonth() + 1) + '-' +
+                            pad(now.getDate()) + 'T' +
+                            pad(now.getHours());
+
+                        var idx = 0;
+                        while (idx < d.hourly.time.length && d.hourly.time[idx].slice(0, 13) !== iso) idx++;
+
+                        var hi = Math.max.apply(null, temps.slice(0, 24));
+                        var lo = Math.min.apply(null, temps.slice(0, 24));
+
+                        document.getElementById("weatherIcon").innerHTML = buildIcon(code[idx]);
+                        document.getElementById("curTemp").textContent = cur + "°";
+                        document.getElementById("hilo").textContent =  Math.round(lo) + "° / " + Math.round(hi) + "°";
+                    } catch (e) { }
+                }
+            };
+            x.send();
+        }
+
+        function initFace() {
+            updateTime();
+            fetchInspiration();
+            updateCalendar();
+            updateCountdown();
+            updateEvents();
+            fetchWeather();
+        }
+
+        window.initFace = initFace;
+        initFace();
+        setInterval(function () {
+            updateTime();
+            updateCalendar();
+            updateCountdown();
+        }, 1000);
+        setInterval(updateEvents, 60 * 1000);
+        setInterval(fetchWeather, 10 * 60 * 1000);
+        setInterval(fetchInspiration, 15 * 60 * 1000);
+    })();
+    </script>
+</body>
+
+</html>
